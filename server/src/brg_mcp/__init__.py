@@ -1,0 +1,1 @@
+"""The BRG MCP server."""

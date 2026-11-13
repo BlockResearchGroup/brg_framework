@@ -1,0 +1,45 @@
+# Website built from theory/. Run: pip install mkdocs-material && mkdocs serve
+# catalog/ is not on the site yet; add it once it is generated.
+site_name: BRG framework
+repo_url: https://github.com/BlockResearchGroup/brg_framework
+docs_dir: theory
+theme:
+  name: material
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.superfences
+  - pymdownx.snippets
+  - tables
+nav:
+  - Home: README.md
+  - Force density:
+      - Overview: fd/index.md
+      - Formulation: fd/formulation.md
+      - Glossary: fd/glossary.md
+      - References: fd/references.md
+  - Dynamic relaxation:
+      - Overview: dr/index.md
+      - Formulation: dr/formulation.md
+      - Glossary: dr/glossary.md
+      - References: dr/references.md
+  - Thrust network analysis:
+      - Overview: tna/index.md
+      - Formulation: tna/formulation.md
+      - Glossary: tna/glossary.md
+      - References: tna/references.md
+  - Thrust network optimisation:
+      - Overview: tno/index.md
+      - Formulation: tno/formulation.md
+      - Glossary: tno/glossary.md
+      - References: tno/references.md
+  - Discrete element models:
+      - Overview: dem/index.md
+      - Formulation: dem/formulation.md
+      - Glossary: dem/glossary.md
+      - References: dem/references.md
+  - Algebraic graph statics:
+      - Overview: ags/index.md
+      - Formulation: ags/formulation.md
+      - Glossary: ags/glossary.md
+      - References: ags/references.md
