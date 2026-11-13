@@ -18,7 +18,7 @@ All content lives in this repository. It reaches people in three ways:
 
 | Who | How they get it | Folder |
 | --- | --- | --- |
-| Coders using Claude Code, Codex, Kimi Code or Antigravity | Skills installed in their project | `skills/` |
+| Coders using Claude Code, Codex, Kimi Code or Antigravity | Skills installed in their project: each package's own skill, plus the shared ones from here | `skills/` in each package and here |
 | Students and anyone learning in a chat app | Hosted MCP server, each student adds it once to their own account | `server/` |
 | Everyone else | Website | `theory/`, built with `mkdocs.yml` |
 
@@ -83,15 +83,16 @@ Two steps, inside the project where you write code.
 pip install compas_fd
 ```
 
-2. Install the skills into the project:
+2. Install the skill of that package, and the shared skills from here:
 
 ```bash
+npx skills add BlockResearchGroup/compas_fd
 npx skills add BlockResearchGroup/brg_framework
 ```
 
-Or copy by hand:
+Or copy the `skills/*` folders by hand:
 
-| Agent app | Copy `skills/*` into |
+| Agent app | Copy into |
 | --- | --- |
 | Claude Code | `.claude/skills/` |
 | Codex, Kimi Code, Antigravity | `.agents/skills/` |
@@ -119,14 +120,14 @@ Coders do not need the MCP server. They can add it too if they want the teaching
 ## The five rules
 
 1. **One source.** Knowledge is Markdown in git. Skill references, website pages and server replies are generated from it or read it directly. Nothing is edited twice.
-2. **One skill per package, plus one for choosing a method.** Each is a folder with a `SKILL.md` that follows the [Agent Skills specification](https://agentskills.io/specification). The `name` is lowercase with hyphens and equals the folder name: `compas-fd`, not `compas_fd`. The `description` says what it does and when to use it. Keep the body under 500 lines.
+2. **Each package carries its own skill. This repository holds only skills that span several packages**, such as choosing a method. Each is a folder with a `SKILL.md` that follows the [Agent Skills specification](https://agentskills.io/specification). The `name` is lowercase with hyphens and equals the folder name: `compas-fd`, not `compas_fd`. The `description` says what it does and when to use it. Keep the body under 500 lines.
 3. **The installed package is the API truth.** A skill never copies signatures. It tells the agent to check the installed version and read the docstring.
 4. **Every example is a real `.py` file that CI runs** against a pinned package version.
 5. **One MCP server, with two tools at most.** For learners it returns the full BRG text, and the chat shows that text as the answer, not a link.
 
 ## What belongs where
 
-This repository is the lab layer. It holds the theory and the skills, and links to each package. Each package keeps only its own code, docs and examples.
+This repository is the lab layer and the pointer. It holds the theory, the catalog and the skills that span several packages. Each package holds its own code, docs, examples and its own skill.
 
 | Content | Home |
 | --- | --- |
@@ -137,7 +138,8 @@ This repository is the lab layer. It holds the theory and the skills, and links 
 | MCP server | `brg_framework`, in `server/` |
 | API reference: source and docstrings | the package |
 | Examples and the tests that run them | the package |
-| Package skill: conventions, pitfalls, links to the package | `brg_framework`, in `skills/` |
+| Package skill: how to use that one package | the package, in `skills/` |
+| Skills that combine several packages | `brg_framework`, in `skills/` |
 | `AGENTS.md` for contributors | the package |
 
 No package imports `brg_framework`. It is content, not a runtime dependency.
@@ -160,10 +162,8 @@ brg_framework/
 │   └── methods.md             # method to package decision table
 ├── skills/
 │   ├── brg-methods/SKILL.md   # which method, which package
-│   ├── compas-fd/
-│   │   ├── SKILL.md
-│   │   └── references/        # generated from theory/ and examples
-│   └── compas-tna/ ...
+│   └── ...                    # other skills that combine several packages
+│                              # compas-fd/ etc. are drafts, to move into their packages
 ├── server/                    # the MCP adapter (FastMCP), optional install
 ├── evals/                     # tasks, checkers, runner
 └── mkdocs.yml                 # website built from theory/ and catalog/
@@ -171,11 +171,15 @@ brg_framework/
 
 ## Layout of each package
 
-Packages stay as they are. Nothing about skills goes into them. Two optional additions help agents:
+Each package carries its own skill, so it is versioned and released with the code.
 
 ```text
 compas_fd/
 ├── AGENTS.md                  # build, test, lint, conventions
+├── skills/
+│   └── compas-fd/
+│       ├── SKILL.md           # how to use this package
+│       └── references/        # links to theory in brg_framework
 ├── docs/
 │   ├── examples/*.py          # one runnable file per example
 │   └── trace.toml             # theory id, symbol, example, test
@@ -234,9 +238,14 @@ CI checks that the theory id exists, the symbol imports, the example runs and th
 | Claude Code | `.claude/skills/` |
 | Codex, Kimi Code, Antigravity | `.agents/skills/` |
 
-Copy or link `skills/*` into those folders. `npx skills add BlockResearchGroup/brg_framework` does the same; it is a third-party tool.
+Copy or link the `skills/*` folders into those folders. `npx skills add BlockResearchGroup/<repository>` does the same; it is a third-party tool.
 
-Each skill records the package version it was checked against and tells the agent to compare it with the installed version. When a package changes, update its skill here.
+| Skill | Where it comes from |
+| --- | --- |
+| `compas-fd`, `compas-tna`, ... | the package repository |
+| `brg-methods` and other skills that combine packages | this repository |
+
+Each package skill records the package version it was checked against. When the package changes, its maintainer updates the skill in the same pull request.
 
 ## MCP server
 
@@ -253,7 +262,7 @@ Goal: copy code as it is, without the model retyping it. A script that copies a 
 
 Two layers, one script:
 
-1. **Script in the skill (works everywhere).** Each package skill has `scripts/copy_example.py`. The skill text tells the agent to run it. The file lands on disk unchanged. Scripts are part of the Agent Skills standard, so this works in all four agent apps with no setup.
+1. **Script in the skill (works everywhere).** Each package's skill has `scripts/copy_example.py`. The skill text tells the agent to run it. The file lands on disk unchanged. Scripts are part of the Agent Skills standard, so this works in all four agent apps with no setup.
 2. **Hook (optional, faster).** The agent app runs the same script by itself at a fixed moment, without a model call.
 
 Rules that keep hooks compatible with all four agent apps:
@@ -276,8 +285,9 @@ brg_framework/
 ├── hooks/
 │   ├── brg_hook.py            # the one script
 │   └── install.py             # writes the four config files
+compas_fd/
 └── skills/compas-fd/
-    └── scripts/copy_example.py
+    └── scripts/copy_example.py   # in the package
 ```
 
 ## Not used
@@ -291,7 +301,9 @@ A2A, Open Responses, per-agent plugins, per-package MCP servers.
 - [ ] Remove editor detection and the write, install and run instruction.
 - [ ] List topics, not pages, in the server instructions.
 - [ ] Keep all twelve compas_fd examples in one place and remove the duplicate.
-- [x] Add skills: `brg-methods`, `compas-fd`, `compas-dr`, `compas-tna`, `compas-tno`, `compas-dem`, `compas-ags`.
+- [x] Add `brg-methods` here.
+- [x] Draft package skills here: `compas-fd`, `compas-dr`, `compas-tna`, `compas-tno`, `compas-dem`, `compas-ags`.
+- [ ] Move each draft into its package's `skills/` folder, then delete it here.
 - [ ] Host the server at a web address.
 - [ ] Run every Python example in CI against a pinned package version.
 - [ ] Measure before going further (below).
@@ -306,7 +318,7 @@ Compare five setups on the same tasks: package only, today's server, fixed serve
 | --- | --- |
 | Does teaching need the page text in chat, or is a link enough? | The text. Learners get the answer in the chat, not a link |
 | Is the server hosted, or run by each user? | Hosted. Each student adds it to their own account |
-| Where do package skills live? | Here, in `skills/`. They point to the packages. Packages do not carry skills |
+| Where do package skills live? | In each package. This repository is the pointer. Only skills that combine several packages live here |
 | Where is Python and COMPAS installation explained? | In [COMPAS](https://compas.dev). This repository only covers the BRG layer |
 | Which packages are covered? | The list in `catalog/packages.toml`. More are added there over time |
 

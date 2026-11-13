@@ -10,6 +10,8 @@ metadata:
 
 Pick the package from the table, then use that package's skill. Do not solve the problem by hand when a package does it.
 
+Each package carries its own skill. If it is not installed, install it from the package repository: `npx skills add BlockResearchGroup/<package>`.
+
 | The user wants | Method | Package | Skill |
 | --- | --- | --- | --- |
 | Shape of a cable net, membrane or hanging network from force densities | Force density | `compas_fd` | `compas-fd` |
