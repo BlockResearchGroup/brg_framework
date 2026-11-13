@@ -29,4 +29,4 @@ To be written. What goes wrong, and how you notice.
 
 ## Package
 
-`compas_fd`. See the skill `skills/compas-fd/`.
+`compas_fd`: https://github.com/BlockResearchGroup/compas_fd

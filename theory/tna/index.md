@@ -29,4 +29,4 @@ To be written. What goes wrong, and how you notice.
 
 ## Package
 
-`compas_tna`. See the skill `skills/compas-tna/`.
+`compas_tna`: https://github.com/BlockResearchGroup/compas_tna

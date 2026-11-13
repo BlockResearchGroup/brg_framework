@@ -29,4 +29,4 @@ To be written. What goes wrong, and how you notice.
 
 ## Package
 
-`compas_dem`. See the skill `skills/compas-dem/`.
+`compas_dem`: https://github.com/BlockResearchGroup/compas_dem

@@ -29,4 +29,4 @@ To be written. What goes wrong, and how you notice.
 
 ## Package
 
-`compas_dr`. See the skill `skills/compas-dr/`.
+`compas_dr`: https://github.com/BlockResearchGroup/compas_dr

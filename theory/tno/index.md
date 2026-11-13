@@ -29,4 +29,4 @@ To be written. What goes wrong, and how you notice.
 
 ## Package
 
-`compas_tno`. See the skill `skills/compas-tno/`.
+`compas_tno`: https://github.com/BlockResearchGroup/compas_tno
