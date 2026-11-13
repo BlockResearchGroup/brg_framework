@@ -1,7 +1,7 @@
 # Theory
 
 One folder per method. This is the only place where theory is written by hand.
-The skills and the MCP server read from here.
+The MCP server and the website read from here.
 
 | Folder | Method | Used by |
 | --- | --- | --- |

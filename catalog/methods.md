@@ -2,14 +2,14 @@
 
 One row per method. Keep this table and `skills/brg-methods/SKILL.md` in step.
 
-| Method | Package | Skill | Theory |
+| Method | Package | Repository | Theory |
 | --- | --- | --- | --- |
-| Force density | `compas_fd` | `compas-fd` | `theory/fd/` |
-| Dynamic relaxation | `compas_dr` | `compas-dr` | `theory/dr/` |
-| Thrust network analysis | `compas_tna` | `compas-tna` | `theory/tna/` |
-| Thrust network optimisation | `compas_tno` | `compas-tno` | `theory/tno/` |
-| Discrete element models | `compas_dem` | `compas-dem` | `theory/dem/` |
-| Algebraic graph statics | `compas_ags` | `compas-ags` | `theory/ags/` |
+| Force density | `compas_fd` | [repository](https://github.com/BlockResearchGroup/compas_fd) | `theory/fd/` |
+| Dynamic relaxation | `compas_dr` | [repository](https://github.com/BlockResearchGroup/compas_dr) | `theory/dr/` |
+| Thrust network analysis | `compas_tna` | [repository](https://github.com/BlockResearchGroup/compas_tna) | `theory/tna/` |
+| Thrust network optimisation | `compas_tno` | [repository](https://github.com/BlockResearchGroup/compas_tno) | `theory/tno/` |
+| Discrete element models | `compas_dem` | [repository](https://github.com/BlockResearchGroup/compas_dem) | `theory/dem/` |
+| Algebraic graph statics | `compas_ags` | [repository](https://github.com/BlockResearchGroup/compas_ags) | `theory/ags/` |
 
 ## How to choose
 
