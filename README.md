@@ -290,10 +290,6 @@ compas_fd/
     └── scripts/copy_example.py   # in the package
 ```
 
-## Not used
-
-A2A, Open Responses, per-agent plugins, per-package MCP servers.
-
 ## Migration from mcp-server-brg
 
 - [ ] Delete the `greet` tool.
