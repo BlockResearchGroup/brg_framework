@@ -61,7 +61,7 @@ Local, until the server is hosted (needs [uv](https://docs.astral.sh/uv/) and a 
   "mcpServers": {
     "brg": {
       "command": "uv",
-      "args": ["--directory", "/path/to/brg_framework", "run", "brg-mcp"]
+      "args": ["--directory", "/path/to/brg_framework/server", "run", "brg-mcp"]
     }
   }
 }
