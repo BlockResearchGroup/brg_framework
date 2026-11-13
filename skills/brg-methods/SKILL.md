@@ -17,6 +17,7 @@ Pick the package from the table, then use that package's skill. Do not solve the
 | A compression-only vault shape under vertical loads, with form and force diagrams | Thrust network analysis | `compas_tna` | `compas-tna` |
 | Is an existing masonry vault safe: minimum or maximum thrust, minimum thickness | Thrust network optimisation | `compas_tno` | `compas-tno` |
 | A masonry structure as separate blocks with contacts | Discrete element model | `compas_dem` | `compas-dem` |
+| Form and force diagrams of a 2D truss or funicular structure, or its load path | Algebraic graph statics | `compas_ags` | `compas-ags` |
 
 ## Rules
 

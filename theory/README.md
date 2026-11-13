@@ -10,6 +10,7 @@ The skills and the MCP server read from here.
 | `tna/` | Thrust network analysis | `compas_tna` |
 | `tno/` | Thrust network optimisation | `compas_tno` |
 | `dem/` | Discrete element models | `compas_dem` |
+| `ags/` | Algebraic graph statics | `compas_ags` |
 
 ## Files in each folder
 
