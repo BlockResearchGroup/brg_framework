@@ -16,6 +16,102 @@ one source in git  ->  skills on disk   ->  coding agents
                    ->  website          ->  people
 ```
 
+## Two kinds of users
+
+The content is the same for both. Only the door differs.
+
+| | Learners | Coders |
+| --- | --- | --- |
+| Who | Students and others who want to read theory, see examples and do exercises. They do not write a project | People writing Python with BRG packages |
+| What they ask | "Explain force density." "Show me a hypar example." "Give me exercise 2." | "Form-find this net with compas_fd." "Why does my solver fail?" |
+| Door | The MCP server | Skills on disk |
+| Why | Nothing to install in a project. Always the newest text. Works in a chat app | Matches the installed package version. Works offline. The agent reads only what it needs |
+| Extras | Links to notebooks on the teaching website | Scripts and optional hooks that copy examples as files |
+
+A person can be both. A student who starts to code installs the skills as well.
+
+### Install for learners
+
+One step: connect the MCP server. Nothing else.
+
+**In a chat app (Claude, ChatGPT, on web or phone).** Add the hosted server as a custom connector, once per account:
+
+```text
+https://<to be decided>/mcp
+```
+
+This needs the server to be hosted at a web address. Until then, learners use the local option below.
+
+**In Antigravity.** Add the server to `~/.gemini/config/mcp_config.json`.
+
+Hosted:
+
+```json
+{
+  "mcpServers": {
+    "brg": { "serverUrl": "https://<to be decided>/mcp" }
+  }
+}
+```
+
+Local, until the server is hosted (needs [uv](https://docs.astral.sh/uv/) and a clone of this repository):
+
+```json
+{
+  "mcpServers": {
+    "brg": {
+      "command": "uv",
+      "args": ["--directory", "/path/to/brg_framework", "run", "brg-mcp"]
+    }
+  }
+}
+```
+
+Then ask in plain words, for example "explain the force density method" or "show the hypar example".
+
+### Install for coders
+
+Two steps, inside the project where you write code.
+
+1. Install the package you need:
+
+```bash
+pip install compas_fd
+```
+
+2. Install the skills into the project:
+
+```bash
+npx skills add BlockResearchGroup/brg_framework
+```
+
+Or copy by hand:
+
+| Agent app | Copy `skills/*` into |
+| --- | --- |
+| Claude Code | `.claude/skills/` |
+| Codex, Kimi Code, Antigravity | `.agents/skills/` |
+
+Optional third step, for fast copying of examples:
+
+```bash
+brg hooks install
+```
+
+Coders do not need the MCP server. They can add it too if they want the teaching material in the same session.
+
+### What each user gets
+
+| Content | Learners, through MCP | Coders, through skills |
+| --- | --- | --- |
+| Theory: explanation, assumptions, limits | yes | yes, loaded when needed |
+| Glossary and references | yes | yes, loaded when needed |
+| Exercises and notebooks | yes | no |
+| Examples to read | yes | yes |
+| Examples copied into the project as files | no | yes |
+| API of the installed version | no | yes |
+| Pitfalls and conventions for a package | no | yes |
+
 ## The five rules
 
 1. **One source.** Knowledge is Markdown in git. Skill references, website pages and server replies are generated from it or read it directly. Nothing is edited twice.
