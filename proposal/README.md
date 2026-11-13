@@ -1,0 +1,182 @@
+# BRG knowledge system: proposal and guidelines
+
+Status: proposal, 13 November 2026. Nothing here is implemented yet.
+
+## Goal
+
+Help coding agents (Claude Code, Codex, Kimi Code, Antigravity) find the right theory and write correct Python with the right BRG package and version.
+
+## Proposal in one line
+
+Write the knowledge once as Markdown, package it as Agent Skills, and keep one MCP server as an optional second door.
+
+```text
+one source in git  ->  skills on disk   ->  coding agents
+                   ->  MCP server       ->  chat apps, students
+                   ->  website          ->  people
+```
+
+## The five rules
+
+1. **One source.** Knowledge is Markdown in git. Skill references, website pages and server replies are generated from it or read it directly. Nothing is edited twice.
+2. **One skill per package, plus one for choosing a method.** Each is a folder with a `SKILL.md` that follows the [Agent Skills specification](https://agentskills.io/specification). The `name` is lowercase with hyphens and equals the folder name: `compas-fd`, not `compas_fd`. The `description` says what it does and when to use it. Keep the body under 500 lines.
+3. **The installed package is the API truth.** A skill never copies signatures. It tells the agent to check the installed version and read the docstring.
+4. **Every example is a real `.py` file that CI runs** against a pinned package version.
+5. **One MCP server at most, with two tools at most.** Its replies are material to use, not text to repeat.
+
+## What belongs where
+
+The test: does this text change when the package version changes? If yes, it lives in the package. If no, it lives here.
+
+| Content | Home |
+| --- | --- |
+| Method theory: derivations, assumptions, limits, glossary, papers | `brg_framework` |
+| Teaching: exercises, notebooks, slides | `brg_framework` |
+| Catalog of packages (generated from each package's manifest) | `brg_framework` |
+| Method-choice skill | `brg_framework` |
+| MCP server | `brg_framework`, in `server/` |
+| API reference: source and docstrings | the package |
+| Examples and the tests that run them | the package |
+| Package skill: conventions, pitfalls, checked patterns | the package (may start here) |
+| `AGENTS.md` for contributors | the package |
+
+No package imports `brg_framework`. It is content, not a runtime dependency.
+
+## Layout of this repository
+
+```text
+brg_framework/
+├── AGENTS.md                  # for people and agents editing this repository
+├── theory/
+│   ├── fd/                    # force density
+│   │   ├── index.md           # what, when, assumptions, limits
+│   │   ├── formulation.md     # equations with stable ids
+│   │   ├── glossary.md
+│   │   ├── references.md
+│   │   └── teaching/          # exercises, notebooks, slides
+│   └── tna/ ...
+├── catalog/
+│   ├── packages.toml          # generated from each package's manifest
+│   └── methods.md             # method to package decision table
+├── skills/
+│   ├── brg-methods/SKILL.md   # which method, which package
+│   ├── compas-fd/
+│   │   ├── SKILL.md
+│   │   └── references/        # generated from theory/ and examples
+│   └── compas-tna/ ...
+├── server/                    # the MCP adapter (FastMCP), optional install
+├── evals/                     # tasks, checkers, runner
+└── mkdocs.yml                 # website built from theory/ and catalog/
+```
+
+## Layout of each package
+
+```text
+compas_fd/
+├── AGENTS.md                  # build, test, lint, conventions
+├── pyproject.toml             # plus a [tool.brg] manifest for the catalog
+├── src/compas_fd/
+│   └── skills/compas-fd/      # package data, ships in the wheel
+│       ├── SKILL.md
+│       └── references/
+├── docs/
+│   ├── examples/*.py          # one runnable file per example
+│   └── trace.toml             # theory id, symbol, example, test
+└── tests/
+    └── test_examples.py       # runs every docs/examples/*.py
+```
+
+## Skill template
+
+```text
+---
+name: compas-fd
+description: Form finding with the force density method using the compas_fd Python package (cable nets, membranes, hanging and funicular networks, constrained supports, selfweight). Use when the user mentions force density, FDM, form finding of nets, or imports compas_fd.
+license: MIT
+compatibility: Requires Python 3.9+ and the compas_fd package
+metadata:
+  package: compas_fd
+  validated-against: "0.5.4"
+---
+
+# compas_fd
+
+1. Check the installed version: `python -c "import compas_fd; print(compas_fd.__version__)"`.
+   This skill was checked against 0.5.4. If the version differs, trust the installed docstrings over this file.
+2. Read the API from the installed package, not from memory:
+   `python -c "from compas_fd.solvers import fd_numpy; help(fd_numpy)"`.
+3. Build `vertices`, `fixed`, `edges` and `forcedensities` first. Add `loads` for selfweight.
+4. Positive force density is tension, negative is compression. Gravity loads point in negative Z.
+5. For sliding supports use `fd_constrained_numpy`, with one constraint or `None` per vertex.
+6. Verify before answering: print the height range and check `result.residuals` at the free vertices.
+
+Theory and limits: references/theory.md
+Checked examples: references/examples.md
+```
+
+`validated-against` is a BRG convention inside the standard `metadata` map. The specification has no version field.
+
+## Linking theory to code
+
+Write each link once, as data, and let CI check it. Never write a line number or a `main` link by hand.
+
+```toml
+[[trace]]
+theory  = "fd/formulation#equilibrium"
+symbol  = "compas_fd.solvers.fd_numpy"
+example = "docs/examples/hypar.py"
+test    = "tests/test_hypar.py::test_hypar"
+```
+
+CI checks that the theory id exists, the symbol imports, the example runs and the test is collected. It derives the source link from the symbol and pins it to the release tag.
+
+## Installing skills
+
+| Agent app | Project folder |
+| --- | --- |
+| Claude Code | `.claude/skills/` |
+| Codex, Kimi Code, Antigravity | `.agents/skills/` |
+
+Copy or link `skills/*` into those folders. `npx skills add BlockResearchGroup/brg_framework` does the same; it is a third-party tool. Install into the project, not the home folder, so the skill matches the package version in that environment.
+
+## MCP server
+
+- Lives in `server/` in this repository, built with FastMCP, installed as an optional extra.
+- Reads the same Markdown files. It holds no content of its own.
+- No per-package servers.
+- Serving the skills over MCP comes later, once agent apps support the MCP Skills extension.
+
+## Not used
+
+Hooks, A2A, Open Responses, per-agent plugins. Hooks enforce rules; they do not deliver knowledge, and each agent app configures them differently.
+
+## Migration from mcp-server-brg
+
+- [ ] Delete the `greet` tool.
+- [ ] Stop asking the model to repeat each page word for word.
+- [ ] Remove editor detection and the write, install and run instruction.
+- [ ] List topics, not pages, in the server instructions.
+- [ ] Keep all twelve compas_fd examples in one place and remove the duplicate.
+- [ ] Add three skills: `brg-methods`, `compas-fd`, `compas-tna`.
+- [ ] Run every Python example in CI against a pinned package version.
+- [ ] Measure before going further (below).
+
+## Measure first
+
+Compare five setups on the same tasks: package only, today's server, fixed server, skills only, skills and server. Record input, cached and output tokens, model calls, wall time, and pass or fail. Judge correctness first, then tokens, then time. No saving is claimed until these numbers exist.
+
+## Open questions
+
+- [ ] Does teaching need the exact page text shown in chat, or is a short answer with a link enough?
+- [ ] Is the server hosted for students, or run locally by each user?
+- [ ] Who owns each package skill once it moves into the package?
+- [ ] Which packages come after fd and tna?
+
+## References
+
+- [Agent Skills specification](https://agentskills.io/specification)
+- [AGENTS.md](https://agents.md/)
+- [MCP 2026-07-28 release](https://blog.modelcontextprotocol.io/posts/2026-07-28/)
+- [MCP Skills extension](https://modelcontextprotocol.io/extensions/skills/overview)
+- [FastMCP](https://gofastmcp.com/docs/changelog)
+- [AAIF projects](https://aaif.io/projects)
