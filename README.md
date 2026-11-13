@@ -12,11 +12,13 @@ Help coding agents (Claude Code, Codex, Kimi Code, Antigravity) find the right t
 
 Write the knowledge once as Markdown, package it as Agent Skills, and keep one MCP server as an optional second door.
 
-```text
-one source in git  ->  skills on disk   ->  coding agents
-                   ->  MCP server       ->  chat apps, students
-                   ->  website          ->  people
-```
+All content lives in this repository. It reaches people in three ways:
+
+| Who | How they get it | Folder |
+| --- | --- | --- |
+| Coders using Claude Code, Codex, Kimi Code or Antigravity | Skills installed in their project | `skills/` |
+| Students and anyone learning in a chat app | MCP server, added once as a connector | `server/` |
+| Everyone else | Website | `theory/`, built with `mkdocs.yml` |
 
 ## Two kinds of users
 
