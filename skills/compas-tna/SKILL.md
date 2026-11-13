@@ -17,7 +17,7 @@ Thrust network analysis for compression-only vaults under vertical loads. The pa
 ## Before writing code
 
 1. Check that the package is installed and which version: `python -c "import compas_tna; print(compas_tna.__version__)"`.
-   If it is missing, install it: `pip install compas_tna`.
+   If it is missing, install it: `pip install compas_tna`. If Python or COMPAS itself is missing, follow https://compas.dev first.
    This skill was checked against 0.9.0. If the version differs, trust the installed docstrings over this file.
 2. Read the API from the installed package, not from memory. For each name you plan to use:
    `python -c "import compas_tna.equilibrium as m; help(m.vertical_from_zmax)"`.

@@ -17,7 +17,7 @@ Computational graphic statics in 2D: algebraic graph statics, its bi-directional
 ## Before writing code
 
 1. Check that the package is installed and which version: `python -c "import compas_ags; print(compas_ags.__version__)"`.
-   If it is missing, install it: `pip install compas_ags`.
+   If it is missing, install it: `pip install compas_ags`. If Python or COMPAS itself is missing, follow https://compas.dev first.
    This skill was checked against 1.3.3. If the version differs, trust the installed docstrings over this file.
 2. Read the API from the installed package, not from memory. For each name you plan to use:
    `python -c "import compas_ags.ags as m; help(m.graphstatics)"`.

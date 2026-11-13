@@ -4,20 +4,22 @@ Shared knowledge for the Block Research Group Python packages: theory, a catalog
 
 Status: in progress. Skills and server exist; theory and hooks are still to be written.
 
+This is the lab layer on top of COMPAS. Installing Python and COMPAS itself is covered by [COMPAS](https://compas.dev). This repository adds BRG theory and points to the individual BRG packages.
+
 ## Goal
 
 Help coding agents (Claude Code, Codex, Kimi Code, Antigravity) find the right theory and write correct Python with the right BRG package and version.
 
 ## In one line
 
-Write the knowledge once as Markdown, package it as Agent Skills, and keep one MCP server as an optional second door.
+Write the knowledge once as Markdown. Coders get it as Agent Skills, learners get it through one hosted MCP server.
 
 All content lives in this repository. It reaches people in three ways:
 
 | Who | How they get it | Folder |
 | --- | --- | --- |
 | Coders using Claude Code, Codex, Kimi Code or Antigravity | Skills installed in their project | `skills/` |
-| Students and anyone learning in a chat app | MCP server, added once as a connector | `server/` |
+| Students and anyone learning in a chat app | Hosted MCP server, each student adds it once to their own account | `server/` |
 | Everyone else | Website | `theory/`, built with `mkdocs.yml` |
 
 ## Two kinds of users
@@ -29,22 +31,20 @@ The content is the same for both. Only the door differs.
 | Who | Students and others who want to read theory, see examples and do exercises. They do not write a project | People writing Python with BRG packages |
 | What they ask | "Explain force density." "Show me a hypar example." "Give me exercise 2." | "Form-find this net with compas_fd." "Why does my solver fail?" |
 | Door | The MCP server | Skills on disk |
-| Why | Nothing to install in a project. Always the newest text. Works in a chat app | Matches the installed package version. Works offline. The agent reads only what it needs |
+| Why | Nothing to install. Always the newest text. The full answer appears in the chat, not a link | Matches the installed package version. Works offline. The agent reads only what it needs |
 | Extras | Links to notebooks on the teaching website | Scripts and optional hooks that copy examples as files |
 
 A person can be both. A student who starts to code installs the skills as well.
 
 ### Install for learners
 
-One step: connect the MCP server. Nothing else.
+One step: add the hosted MCP server to your own account. Nothing else.
 
-**In a chat app (Claude, ChatGPT, on web or phone).** Add the hosted server as a custom connector, once per account:
+**In a chat app (Claude, ChatGPT, on web or phone).** Add it as a custom connector:
 
 ```text
 https://<to be decided>/mcp
 ```
-
-This needs the server to be hosted at a web address. Until then, learners use the local option below.
 
 **In Antigravity.** Add the server to `~/.gemini/config/mcp_config.json`.
 
@@ -58,7 +58,7 @@ Hosted:
 }
 ```
 
-Local, until the server is hosted (needs [uv](https://docs.astral.sh/uv/) and a clone of this repository):
+Local, only for developing the server (needs [uv](https://docs.astral.sh/uv/) and a clone of this repository):
 
 ```json
 {
@@ -71,13 +71,13 @@ Local, until the server is hosted (needs [uv](https://docs.astral.sh/uv/) and a 
 }
 ```
 
-Then ask in plain words, for example "explain the force density method" or "show the hypar example".
+Then ask in plain words, for example "explain the force density method" or "show the hypar example". The answer is the BRG text itself, shown in the chat.
 
 ### Install for coders
 
 Two steps, inside the project where you write code.
 
-1. Install the package you need:
+1. Install the package you need. For Python and COMPAS itself, follow the [COMPAS installation guide](https://compas.dev) first.
 
 ```bash
 pip install compas_fd
@@ -122,11 +122,11 @@ Coders do not need the MCP server. They can add it too if they want the teaching
 2. **One skill per package, plus one for choosing a method.** Each is a folder with a `SKILL.md` that follows the [Agent Skills specification](https://agentskills.io/specification). The `name` is lowercase with hyphens and equals the folder name: `compas-fd`, not `compas_fd`. The `description` says what it does and when to use it. Keep the body under 500 lines.
 3. **The installed package is the API truth.** A skill never copies signatures. It tells the agent to check the installed version and read the docstring.
 4. **Every example is a real `.py` file that CI runs** against a pinned package version.
-5. **One MCP server at most, with two tools at most.** Its replies are material to use, not text to repeat.
+5. **One MCP server, with two tools at most.** For learners it returns the full BRG text, and the chat shows that text as the answer, not a link.
 
 ## What belongs where
 
-The test: does this text change when the package version changes? If yes, it lives in the package. If no, it lives here.
+This repository is the lab layer. It holds the theory and the skills, and links to each package. Each package keeps only its own code, docs and examples.
 
 | Content | Home |
 | --- | --- |
@@ -137,7 +137,7 @@ The test: does this text change when the package version changes? If yes, it liv
 | MCP server | `brg_framework`, in `server/` |
 | API reference: source and docstrings | the package |
 | Examples and the tests that run them | the package |
-| Package skill: conventions, pitfalls, checked patterns | the package (may start here) |
+| Package skill: conventions, pitfalls, links to the package | `brg_framework`, in `skills/` |
 | `AGENTS.md` for contributors | the package |
 
 No package imports `brg_framework`. It is content, not a runtime dependency.
@@ -171,14 +171,11 @@ brg_framework/
 
 ## Layout of each package
 
+Packages stay as they are. Nothing about skills goes into them. Two optional additions help agents:
+
 ```text
 compas_fd/
 ├── AGENTS.md                  # build, test, lint, conventions
-├── pyproject.toml             # plus a [tool.brg] manifest for the catalog
-├── src/compas_fd/
-│   └── skills/compas-fd/      # package data, ships in the wheel
-│       ├── SKILL.md
-│       └── references/
 ├── docs/
 │   ├── examples/*.py          # one runnable file per example
 │   └── trace.toml             # theory id, symbol, example, test
@@ -237,12 +234,16 @@ CI checks that the theory id exists, the symbol imports, the example runs and th
 | Claude Code | `.claude/skills/` |
 | Codex, Kimi Code, Antigravity | `.agents/skills/` |
 
-Copy or link `skills/*` into those folders. `npx skills add BlockResearchGroup/brg_framework` does the same; it is a third-party tool. Install into the project, not the home folder, so the skill matches the package version in that environment.
+Copy or link `skills/*` into those folders. `npx skills add BlockResearchGroup/brg_framework` does the same; it is a third-party tool.
+
+Each skill records the package version it was checked against and tells the agent to compare it with the installed version. When a package changes, update its skill here.
 
 ## MCP server
 
-- Lives in `server/` in this repository, built with FastMCP, installed as an optional extra.
+- Lives in `server/` in this repository, built with FastMCP.
+- Hosted at one web address. Each student adds it to their own account.
 - Reads the same Markdown files. It holds no content of its own.
+- Returns the full text, and the chat shows it as the answer.
 - No per-package servers.
 - Serving the skills over MCP comes later, once agent apps support the MCP Skills extension.
 
@@ -286,11 +287,12 @@ A2A, Open Responses, per-agent plugins, per-package MCP servers.
 ## Migration from mcp-server-brg
 
 - [ ] Delete the `greet` tool.
-- [ ] Stop asking the model to repeat each page word for word.
+- [ ] Keep showing the full page text in chat for learners. Drop the word-for-word instruction only for the editor mode.
 - [ ] Remove editor detection and the write, install and run instruction.
 - [ ] List topics, not pages, in the server instructions.
 - [ ] Keep all twelve compas_fd examples in one place and remove the duplicate.
-- [ ] Add three skills: `brg-methods`, `compas-fd`, `compas-tna`.
+- [x] Add skills: `brg-methods`, `compas-fd`, `compas-dr`, `compas-tna`, `compas-tno`, `compas-dem`, `compas-ags`.
+- [ ] Host the server at a web address.
 - [ ] Run every Python example in CI against a pinned package version.
 - [ ] Measure before going further (below).
 
@@ -298,12 +300,15 @@ A2A, Open Responses, per-agent plugins, per-package MCP servers.
 
 Compare five setups on the same tasks: package only, today's server, fixed server, skills only, skills and server. Record input, cached and output tokens, model calls, wall time, and pass or fail. Judge correctness first, then tokens, then time. No saving is claimed until these numbers exist.
 
-## Open questions
+## Decisions
 
-- [ ] Does teaching need the exact page text shown in chat, or is a short answer with a link enough?
-- [ ] Is the server hosted for students, or run locally by each user?
-- [ ] Who owns each package skill once it moves into the package?
-- [ ] Which packages come after fd and tna?
+| Question | Decision |
+| --- | --- |
+| Does teaching need the page text in chat, or is a link enough? | The text. Learners get the answer in the chat, not a link |
+| Is the server hosted, or run by each user? | Hosted. Each student adds it to their own account |
+| Where do package skills live? | Here, in `skills/`. They point to the packages. Packages do not carry skills |
+| Where is Python and COMPAS installation explained? | In [COMPAS](https://compas.dev). This repository only covers the BRG layer |
+| Which packages are covered? | The list in `catalog/packages.toml`. More are added there over time |
 
 ## References
 

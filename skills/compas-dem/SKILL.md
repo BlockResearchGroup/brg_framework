@@ -17,7 +17,7 @@ Discrete element models for masonry design and assessment. The package builds th
 ## Before writing code
 
 1. Check that the package is installed and which version: `python -c "import compas_dem; print(compas_dem.__version__)"`.
-   If it is missing, install it: `pip install compas_dem`.
+   If it is missing, install it: `pip install compas_dem`. If Python or COMPAS itself is missing, follow https://compas.dev first.
    This skill was checked against 0.6.0. If the version differs, trust the installed docstrings over this file.
 2. Read the API from the installed package, not from memory. For each name you plan to use:
    `python -c "import compas_dem.models as m; help(m.BlockModel)"`.

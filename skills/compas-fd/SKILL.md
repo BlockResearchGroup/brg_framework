@@ -17,7 +17,7 @@ Constrained form finding with the force density method. The package solves the e
 ## Before writing code
 
 1. Check that the package is installed and which version: `python -c "import compas_fd; print(compas_fd.__version__)"`.
-   If it is missing, install it: `pip install compas_fd`.
+   If it is missing, install it: `pip install compas_fd`. If Python or COMPAS itself is missing, follow https://compas.dev first.
    This skill was checked against 0.5.4. If the version differs, trust the installed docstrings over this file.
 2. Read the API from the installed package, not from memory. For each name you plan to use:
    `python -c "import compas_fd.solvers as m; help(m.fd_numpy)"`.

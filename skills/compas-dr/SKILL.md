@@ -17,7 +17,7 @@ Constrained form finding with dynamic relaxation. The package runs the iteration
 ## Before writing code
 
 1. Check that the package is installed and which version: `python -c "import compas_dr; print(compas_dr.__version__)"`.
-   If it is missing, install it: `pip install compas_dr`.
+   If it is missing, install it: `pip install compas_dr`. If Python or COMPAS itself is missing, follow https://compas.dev first.
    This skill was checked against 0.3.1. If the version differs, trust the installed docstrings over this file.
 2. Read the API from the installed package, not from memory. For each name you plan to use:
    `python -c "import compas_dr.solvers as m; help(m.dr_numpy)"`.

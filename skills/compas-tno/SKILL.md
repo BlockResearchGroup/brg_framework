@@ -17,7 +17,7 @@ Masonry assessment by optimisation of funicular thrust networks. The package set
 ## Before writing code
 
 1. Check that the package is installed and which version: `python -c "import compas_tno; print(compas_tno.__version__)"`.
-   If it is missing, install it: `pip install compas_tno`.
+   If it is missing, install it: `pip install compas_tno`. If Python or COMPAS itself is missing, follow https://compas.dev first.
    This skill was checked against 0.4.0. If the version differs, trust the installed docstrings over this file.
 2. Read the API from the installed package, not from memory. For each name you plan to use:
    `python -c "import compas_tno.problems as m; help(m)"`.
