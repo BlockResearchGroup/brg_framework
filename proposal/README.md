@@ -146,9 +146,42 @@ Copy or link `skills/*` into those folders. `npx skills add BlockResearchGroup/b
 - No per-package servers.
 - Serving the skills over MCP comes later, once agent apps support the MCP Skills extension.
 
+## Scripts and hooks
+
+Goal: copy code as it is, without the model retyping it. A script that copies a file costs almost no tokens and no waiting.
+
+Two layers, one script:
+
+1. **Script in the skill (works everywhere).** Each package skill has `scripts/copy_example.py`. The skill text tells the agent to run it. The file lands on disk unchanged. Scripts are part of the Agent Skills standard, so this works in all four agent apps with no setup.
+2. **Hook (optional, faster).** The agent app runs the same script by itself at a fixed moment, without a model call.
+
+Rules that keep hooks compatible with all four agent apps:
+
+- **One script does the work**: `hooks/brg_hook.py`. No logic lives in a config file.
+- **Only the four shared events**: `SessionStart`, `PreToolUse`, `PostToolUse`, `Stop`.
+- **The script reads JSON from stdin and accepts both spellings** of each field (`tool_name` and `toolName`), because the agent apps differ.
+- **Four small config files call that one script.** `brg hooks install` writes them.
+- **Nothing depends on a hook.** Everything a hook does must also be reachable through the skill script.
+
+| Agent app | Hook config written by the installer |
+| --- | --- |
+| Claude Code | `.claude/settings.json` |
+| Codex | `.codex/hooks.json` (the user must review and trust it once) |
+| Antigravity | `.agents/hooks.json` |
+| Kimi Code | `[[hooks]]` in the user's `~/.kimi-code/config.toml`; it has no project-level hook file |
+
+```text
+brg_framework/
+├── hooks/
+│   ├── brg_hook.py            # the one script
+│   └── install.py             # writes the four config files
+└── skills/compas-fd/
+    └── scripts/copy_example.py
+```
+
 ## Not used
 
-Hooks, A2A, Open Responses, per-agent plugins. Hooks enforce rules; they do not deliver knowledge, and each agent app configures them differently.
+A2A, Open Responses, per-agent plugins, per-package MCP servers.
 
 ## Migration from mcp-server-brg
 
